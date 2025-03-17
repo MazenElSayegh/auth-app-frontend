@@ -1,6 +1,6 @@
 .floating-label {
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 40px;
 }
 
 .floating-label input {
@@ -28,7 +28,7 @@
 /* Move label above when focused OR when there is a value */
 .floating-label input:focus + label,
 .floating-label input:not(:placeholder-shown) + label {
-  top: 0;
+  top: -20%;
   left: 5%;
   font-size: 12px;
   color: #007bff;
@@ -39,4 +39,8 @@
   top: 50%;
   font-size: 16px;
   color: #888;
+}
+
+.small-font {
+  font-size: 10px;
 }
