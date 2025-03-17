@@ -1,3 +1,15 @@
+.login-container {
+  background-image: url("/src/assets/login.jpeg"); /* Change to your image path */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white; /* Adjust text color if needed */
+}
+
 .floating-label {
   position: relative;
   margin-bottom: 40px;
@@ -12,6 +24,7 @@
   font-size: 14px;
   transition: border-color 0.3s;
   background: transparent;
+  color: white;
 }
 
 .floating-label label {
@@ -30,8 +43,9 @@
 .floating-label input:not(:placeholder-shown) + label {
   top: -20%;
   left: 5%;
-  font-size: 12px;
+  font-size: 14px;
   color: #007bff;
+  font-weight: 600;
 }
 
 /* Move label back inside only if input is empty (no focus + no value) */
@@ -39,8 +53,9 @@
   top: 50%;
   font-size: 16px;
   color: #888;
+  font-weight: 400;
 }
 
 .small-font {
-  font-size: 10px;
+  font-size: 11px;
 }

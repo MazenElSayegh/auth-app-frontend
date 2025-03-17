@@ -1,5 +1,5 @@
 export class HttpEndPoints {
-  private static BaseApi = {
+  public static BaseApi = {
     AuthApi: "http://localhost:3000/",
   };
   public static AuthApi = {

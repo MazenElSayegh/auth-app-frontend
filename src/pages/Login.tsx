@@ -4,10 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useAuthStore } from "../store/authStore";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Swal from "sweetalert2";
-import { HttpEndPoints } from "../constants/http.endpoints";
 import "../styles/auth.css";
+import { AuthService } from "../services/auth.service";
+import { AlertService } from "../services/alert.service";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email"),
@@ -16,7 +15,7 @@ const loginSchema = z.object({
 
 const signupSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
-  email: z.string().email("Invalid email"),
+  email: z.string().email("Invalid email format"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -51,74 +50,33 @@ const AuthTabs = () => {
 
   const onLoginSubmit = async (data: LoginData) => {
     try {
-      const response = await axios.post(HttpEndPoints.AuthApi.Login, data);
-
-      if (response.status === 200) {
-        login(
-          response.data.accessToken,
-          response.data.refreshToken,
-          response.data.currentUser,
-          response.data.sessionId
-        );
-        navigate("/dashboard");
-      } else {
-        throw new Error("Invalid response from server");
-      }
+      const response = await AuthService.login(data);
+      login(
+        response.accessToken,
+        response.refreshToken,
+        response.currentUser,
+        response.sessionId
+      );
+      navigate("/dashboard");
     } catch (error: any) {
-      console.error("Login failed", error);
-
-      Swal.fire({
-        icon: "error",
-        title: "Login Failed",
-        text:
-          error.response?.data?.message ||
-          "Invalid credentials, please try again.",
-        position: "top-end",
-        toast: true,
-        showConfirmButton: false,
-        timer: 3000,
-        width: "300px",
-      });
+      AlertService.error("Login Failed", error.message);
     }
   };
 
   const onSignupSubmit = async (data: SignupData) => {
     try {
-      const response = await axios.post(HttpEndPoints.AuthApi.Signup, data);
-      if (response.status === 201) {
-        navigate("/dashboard");
-      } else {
-        throw new Error("Signup failed");
-      }
+      await AuthService.signup(data);
+      navigate("/dashboard");
     } catch (error: any) {
-      console.error("Signup failed", error);
-
-      Swal.fire({
-        icon: "error",
-        title: "Signup Failed",
-        text:
-          error.response?.data?.message ||
-          "Something went wrong, please try again.",
-        position: "top-end",
-        toast: true,
-        showConfirmButton: false,
-        timer: 3000,
-        width: "300px",
-      });
+      AlertService.error("Signup Failed", error.message);
     }
   };
 
   return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-white w-100">
-      <div className="w-50 h-100">
-        <img
-          src="./src/assets/login.jpg"
-          alt="Login"
-          className="w-100 h-100 object-fit-cover"
-        />
-      </div>
+    <div className="login-container vh-100 w-100">
+      <div className="w-50 h-100"></div>
       <div className="d-flex justify-content-center align-items-center vh-100 w-50">
-        <div className="bg-white p-4 rounded w-50 h-100">
+        <div className="p-4 rounded w-50 h-100">
           <ul className="nav nav-tabs mt-5">
             <li className="nav-item">
               <button
@@ -157,7 +115,7 @@ const AuthTabs = () => {
                   />
                   <label>Email</label>
                   {loginErrors.email && (
-                    <div className="text-danger ms-3 small-font">
+                    <div className="text-danger ms-3 small-font mt-2">
                       {loginErrors.email.message}
                     </div>
                   )}
@@ -172,7 +130,7 @@ const AuthTabs = () => {
                   />
                   <label>Password</label>
                   {loginErrors.password && (
-                    <div className="text-danger ms-3 small-font">
+                    <div className="text-danger ms-3 small-font mt-2">
                       {loginErrors.password.message}
                     </div>
                   )}
@@ -204,7 +162,7 @@ const AuthTabs = () => {
                   />
                   <label>Name</label>
                   {signupErrors.name && (
-                    <div className="text-danger ms-3 small-font">
+                    <div className="text-danger ms-3 small-font mt-2">
                       {signupErrors.name.message}
                     </div>
                   )}
@@ -218,7 +176,7 @@ const AuthTabs = () => {
                   />
                   <label>Email</label>
                   {signupErrors.email && (
-                    <div className="text-danger ms-3 small-font">
+                    <div className="text-danger ms-3 small-font mt-2">
                       {signupErrors.email.message}
                     </div>
                   )}
@@ -233,7 +191,7 @@ const AuthTabs = () => {
                   />
                   <label>Password</label>
                   {signupErrors.password && (
-                    <div className="text-danger ms-3 small-font">
+                    <div className="text-danger ms-3 small-font mt-2">
                       {signupErrors.password.message}
                     </div>
                   )}
