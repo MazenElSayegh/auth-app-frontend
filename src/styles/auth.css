@@ -1,5 +1,5 @@
 .login-container {
-  background-image: url("/src/assets/login.jpeg"); /* Change to your image path */
+  background-image: url("/src/assets/login.jpeg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -7,7 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white; /* Adjust text color if needed */
+  color: white;
 }
 
 .floating-label {
@@ -38,8 +38,7 @@
   pointer-events: none;
 }
 
-/* Move label above when focused OR when there is a value */
-.floating-label input:focus + label,
+/* Move label above when there is a value */
 .floating-label input:not(:placeholder-shown) + label {
   top: -20%;
   left: 5%;
@@ -48,7 +47,7 @@
   font-weight: 600;
 }
 
-/* Move label back inside only if input is empty (no focus + no value) */
+/* Move label back inside only if input is empty (no value) */
 .floating-label input:placeholder-shown + label {
   top: 50%;
   font-size: 16px;
