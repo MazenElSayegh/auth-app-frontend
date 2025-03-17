@@ -1,76 +1,20 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useAuthStore } from "../store/authStore";
-import { useNavigate } from "react-router-dom";
+import { useLoginForm } from "../hooks/useLoginForm";
+import { useSignupForm } from "../hooks/useSignupForm";
 import "../styles/auth.css";
-import { AuthService } from "../services/auth.service";
-import { AlertService } from "../services/alert.service";
-
-const loginSchema = z.object({
-  email: z.string().email("Invalid email"),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-const signupSchema = z.object({
-  name: z.string().min(3, "Name must be at least 3 characters"),
-  email: z.string().email("Invalid email format"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Za-z]/, "Password must contain at least one letter")
-    .regex(/\d/, "Password must contain at least one number")
-    .regex(/[\W_]/, "Password must contain at least one special character"),
-});
-
-type LoginData = z.infer<typeof loginSchema>;
-type SignupData = z.infer<typeof signupSchema>;
 
 const AuthTabs = () => {
   const [activeTab, setActiveTab] = useState("login");
-  const { login } = useAuthStore();
-  const navigate = useNavigate();
-
   const {
     register: loginRegister,
     handleSubmit: handleLoginSubmit,
-    formState: { errors: loginErrors },
-  } = useForm<LoginData>({
-    resolver: zodResolver(loginSchema),
-  });
-
+    errors: loginErrors,
+  } = useLoginForm();
   const {
     register: signupRegister,
     handleSubmit: handleSignupSubmit,
-    formState: { errors: signupErrors },
-  } = useForm<SignupData>({
-    resolver: zodResolver(signupSchema),
-  });
-
-  const onLoginSubmit = async (data: LoginData) => {
-    try {
-      const response = await AuthService.login(data);
-      login(
-        response.accessToken,
-        response.refreshToken,
-        response.currentUser,
-        response.sessionId
-      );
-      navigate("/dashboard");
-    } catch (error: any) {
-      AlertService.error("Login Failed", error.message);
-    }
-  };
-
-  const onSignupSubmit = async (data: SignupData) => {
-    try {
-      await AuthService.signup(data);
-      navigate("/dashboard");
-    } catch (error: any) {
-      AlertService.error("Signup Failed", error.message);
-    }
-  };
+    errors: signupErrors,
+  } = useSignupForm();
 
   return (
     <div className="login-container vh-100 w-100">
@@ -99,7 +43,7 @@ const AuthTabs = () => {
           <div className="tab-content mt-5">
             {activeTab === "login" && (
               <form
-                onSubmit={handleLoginSubmit(onLoginSubmit)}
+                onSubmit={handleLoginSubmit}
                 className="d-flex flex-column align-items-center"
               >
                 <h1 className="mb-4">Welcome</h1>
@@ -146,7 +90,7 @@ const AuthTabs = () => {
 
             {activeTab === "signup" && (
               <form
-                onSubmit={handleSignupSubmit(onSignupSubmit)}
+                onSubmit={handleSignupSubmit}
                 className="d-flex flex-column align-items-center"
               >
                 <h1 className="mb-4">Create Account</h1>

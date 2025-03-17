@@ -4,7 +4,7 @@ import { jwtDecode } from "jwt-decode";
 import { HttpEndPoints } from "../constants/http.endpoints";
 
 const apiClient = axios.create({
-  baseURL: HttpEndPoints.BaseApi.AuthApi, // Set your base API URL
+  baseURL: HttpEndPoints.BaseApi.AuthApi,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -28,11 +28,11 @@ const isTokenExpired = (token: string | null) => {
     const currentTime = Math.floor(Date.now() / 1000);
     return decoded.exp < currentTime;
   } catch (error) {
-    return true; // Consider invalid tokens as expired
+    return true;
   }
 };
 
-// Request Interceptor: Attach Access Token
+// Request Interceptor: Attach Access Token or Refresh Token
 apiClient.interceptors.request.use((config) => {
   const { accessToken, refreshToken } = useAuthStore.getState();
   const headerToken = config.url?.includes(HttpEndPoints.AuthApi.RefreshToken)
